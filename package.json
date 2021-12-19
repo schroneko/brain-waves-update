@@ -33,18 +33,18 @@
       "topograph.py"
     ],
     "mac": {
-      "target": "dmg",
-      "icon": "icon.png"
-    },
-    "win": {
-      "target": [{
-        "target": "nsis",
+      "icon": "icon.png",
+      "target": {
+        "target": "dmg",
         "arch": [
           "x64",
-          "ia32"
+          "arm64"
         ]
-      }],
-      "icon": "icon.png"
+      }
+    },
+    "win": {
+      "icon": "icon.png",
+      "target": "nsis"
     },
     "nsis": {
       "oneClick": false,
