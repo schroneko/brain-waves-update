@@ -12,7 +12,7 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 
-from calc_zscore import neuro
+from calc_zscore import calc_zscore
 
 app = Flask(__name__)
 
@@ -57,7 +57,7 @@ def uploads_file():
             print("input_data: " + filename)
             print("input_name: " + input_name)
 
-            neuro(filename, input_name)
+            calc_zscore(filename, input_name)
 
             return redirect(url_for("uploaded_file", filename=filename))
     return render_template("index.html")

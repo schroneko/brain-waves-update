@@ -7,13 +7,11 @@ from scipy import signal
 
 
 def get_psds_theta(data, fs=250, f_range=[4, 8]):
-    """
-    Calculate signal power using Welch method.
-    Input: data- mxn matrix (m: number of channels, n: samples of signals)
-           fs- Sampling frequency (default 128Hz)
-           f_range- Frequency range (default 0.5Hz to 30Hz)
-    Output: Power values and PSD values
-    """
+    # Calculate signal power using Welch method.
+    # Input: data- mxn matrix (m: number of channels, n: samples of signals)
+    #        fs- Sampling frequency (default 128Hz)
+    #        f_range- Frequency range (default 0.5Hz to 30Hz)
+    # Output: Power values and PSD values
     powers = []
     psds = list()
     for sig in data:
@@ -26,13 +24,11 @@ def get_psds_theta(data, fs=250, f_range=[4, 8]):
 
 
 def get_psds_alpha(data, fs=250, f_range=[8, 12]):
-    """
-    Calculate signal power using Welch method.
-    Input: data- mxn matrix (m: number of channels, n: samples of signals)
-           fs- Sampling frequency (default 128Hz)
-           f_range- Frequency range (default 0.5Hz to 30Hz)
-    Output: Power values and PSD values
-    """
+    # Calculate signal power using Welch method.
+    # Input: data- mxn matrix (m: number of channels, n: samples of signals)
+    #        fs- Sampling frequency (default 128Hz)
+    #        f_range- Frequency range (default 0.5Hz to 30Hz)
+    # Output: Power values and PSD values
     powers = []
     psds = list()
     for sig in data:
@@ -45,13 +41,11 @@ def get_psds_alpha(data, fs=250, f_range=[8, 12]):
 
 
 def get_psds_beta(data, fs=250, f_range=[12, 30]):
-    """
-    Calculate signal power using Welch method.
-    Input: data- mxn matrix (m: number of channels, n: samples of signals)
-           fs- Sampling frequency (default 128Hz)
-           f_range- Frequency range (default 0.5Hz to 30Hz)
-    Output: Power values and PSD values
-    """
+    # Calculate signal power using Welch method.
+    # Input: data- mxn matrix (m: number of channels, n: samples of signals)
+    #        fs- Sampling frequency (default 128Hz)
+    #        f_range- Frequency range (default 0.5Hz to 30Hz)
+    # Output: Power values and PSD values
     powers = []
     psds = list()
     for sig in data:
@@ -64,14 +58,12 @@ def get_psds_beta(data, fs=250, f_range=[12, 30]):
 
 
 def plot_topomap(data, ax, fig, draw_cbar=True):
-    """
-    Plot topographic plot of EEG data. This specialy design for Emotiv 14 electrode data.
-    This can be change for any other arrangement by changing ch_pos (channel position array)
-    Input: data- 1D array 14 data values
-           ax- Matplotlib subplot object to be plotted every thing
-           fig- Matplot lib figure object to draw colormap
-           draw_cbar- Visualize color bar in the plot
-    """
+    # Plot topographic plot of EEG data. This specialy design for Emotiv 14 electrode data.
+    # This can be change for any other arrangement by changing ch_pos (channel position array)
+    # Input: data- 1D array 14 data values
+    #        ax- Matplotlib subplot object to be plotted every thing
+    #        fig- Matplot lib figure object to draw colormap
+    #        draw_cbar- Visualize color bar in the plot
     N = 300
     xy_center = [2, 2]
     radius = 2
@@ -168,15 +160,3 @@ def plot_topomap(data, ax, fig, draw_cbar=True):
     ax.set_ylim(-0.5, 4.5)
 
     return ax
-
-
-# if __name__ == "__main__":
-#     data = mne.io.read_raw_edf("1.edf")
-#     raw_data = data.get_data()
-#     ch_data = raw_data[2:16, :]
-#     pwrs, _ = get_psds(ch_data)
-
-#     fig, ax = plt.subplots(figsize=(10, 8))
-#     plot_topomap(pwrs, ax, fig)
-#     plt.show()
-#     fig.savefig("topograph.png", bbox_inches="tight")

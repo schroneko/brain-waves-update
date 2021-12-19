@@ -3,14 +3,12 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 let mainWindow;
 
-// アプリを閉じた時にquit
+// quit after close app
 app.on('window-all-closed', function () {
   app.quit();
 });
 
-// アプリ起動後の処理
 app.on('ready', function () {
-  // let subpy = require('child_process').spawn('python', ['./app.py']);
   let subpy = require('child_process').spawn('python', ['app.py']);
 
   const rq = require('request-promise');
@@ -18,18 +16,18 @@ app.on('ready', function () {
 
   const openWindow = function () {
     mainWindow = new BrowserWindow({
-      width: 400,
-      height: 300,
+      width: 800,
+      height: 600,
       webPreferences: {
         nodeIntegration: true,
       }
     });
     mainWindow.loadURL(mainAddr);
 
-    // 終了処理
+    // terminate process
     mainWindow.on('closed', function () {
 
-      // キャッシュを削除
+      // remove cache
       electron.session.defaultSession.clearCache(() => {})
       mainWindow = null;
     });

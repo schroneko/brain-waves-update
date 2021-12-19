@@ -10,7 +10,7 @@
   },
   "keywords": [],
   "author": "yuta_hayashi",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "devDependencies": {
     "electron": "^16.0.5",
     "electron-builder": "^22.14.5"
@@ -29,7 +29,7 @@
     ],
     "mac": {
       "target": "dmg",
-      "icon": "build/icon.png"
+      "icon": "icon.png"
     },
     "win": {
       "target": [{
@@ -39,7 +39,7 @@
           "ia32"
         ]
       }],
-      "icon": "build/icon.png"
+      "icon": "icon.png"
     },
     "nsis": {
       "oneClick": false,

@@ -15,7 +15,7 @@ from topograph import get_psds_alpha, get_psds_beta, get_psds_theta, plot_topoma
 matplotlib.use("Agg")
 
 
-def neuro(input_data, input_name):
+def calc_zscore(input_data, input_name):
     input_data = os.getcwd() + "/out/" + input_data
     print("input_data: " + input_data)
     print("input_name: " + input_name)
