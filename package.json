@@ -22,25 +22,28 @@
   "build": {
     "appId": "com.yutahayashi.app",
     "files": [
-      "package.json",
-      "package-lock.json",
+      "npy/**/*",
+      "out/**/*",
+      "templates/**/*",
+      "app.py",
+      "calc_zscore.py",
       "main.js",
-      "app.py"
+      "package-lock.json",
+      "package.json",
+      "topograph.py"
     ],
     "mac": {
       "target": "dmg",
       "icon": "icon.png"
     },
     "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ],
+      "target": [{
+        "target": "nsis",
+        "arch": [
+          "x64",
+          "ia32"
+        ]
+      }],
       "icon": "icon.png"
     },
     "nsis": {
