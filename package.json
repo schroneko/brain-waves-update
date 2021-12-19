@@ -1,0 +1,49 @@
+{
+  "name": "eeg_analysis_tool",
+  "version": "1.0.0",
+  "description": "This is a eeg analysis tool for EEG data",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build-mac": "electron-builder --mac --x64",
+    "build-win": "electron-builder --win --x64"
+  },
+  "keywords": [],
+  "author": "yuta_hayashi",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^16.0.5",
+    "electron-builder": "^22.14.5"
+  },
+  "dependencies": {
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
+  },
+  "build": {
+    "appId": "com.yutahayashi.app",
+    "files": [
+      "package.json",
+      "package-lock.json",
+      "main.js",
+      "app.py"
+    ],
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.png"
+    },
+    "win": {
+      "target": [{
+        "target": "nsis",
+        "arch": [
+          "x64",
+          "ia32"
+        ]
+      }],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
