@@ -16,7 +16,8 @@ matplotlib.use("Agg")
 
 
 def calc_zscore(input_data, input_name):
-    input_data = os.getcwd() + "/out/" + input_data
+    # input_data = os.getcwd() + "/out/" + input_data
+    input_data = os.path.join(os.getcwd(), "out", input_data)
     print("input_data: " + input_data)
     print("input_name: " + input_name)
     df = pd.read_table(
@@ -100,67 +101,68 @@ def calc_zscore(input_data, input_name):
         "T6",
     ]
 
-    npy_dir = os.getcwd() + "/npy/"
+    # npy_dir = os.getcwd() + "/npy/"
+    npy_dir = os.path.join(os.getcwd(), "npy")
     np_load_dataset = [
         [
-            npy_dir + "pwrs_rel_alpha_fp1_eval+train.npy",
-            npy_dir + "pwrs_rel_beta_fp1_eval+train.npy",
-            npy_dir + "pwrs_rel_theta_fp1_eval+train.npy",
+            os.path.join(npy_dir, "pwrs_rel_alpha_fp1_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_beta_fp1_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_theta_fp1_eval+train.npy"),
         ],
         [
-            npy_dir + "pwrs_rel_alpha_fp2_eval+train.npy",
-            npy_dir + "pwrs_rel_beta_fp2_eval+train.npy",
-            npy_dir + "pwrs_rel_theta_fp2_eval+train.npy",
+            os.path.join(npy_dir, "pwrs_rel_alpha_fp2_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_beta_fp2_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_theta_fp2_eval+train.npy"),
         ],
         [
-            npy_dir + "pwrs_rel_alpha_c3_eval+train.npy",
-            npy_dir + "pwrs_rel_beta_c3_eval+train.npy",
-            npy_dir + "pwrs_rel_theta_c3_eval+train.npy",
+            os.path.join(npy_dir, "pwrs_rel_alpha_c3_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_beta_c3_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_theta_c3_eval+train.npy"),
         ],
         [
-            npy_dir + "pwrs_rel_alpha_c4_eval+train.npy",
-            npy_dir + "pwrs_rel_beta_c4_eval+train.npy",
-            npy_dir + "pwrs_rel_theta_c4_eval+train.npy",
+            os.path.join(npy_dir, "pwrs_rel_alpha_c4_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_beta_c4_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_theta_c4_eval+train.npy"),
         ],
         [
-            npy_dir + "pwrs_rel_alpha_O1_eval+train.npy",
-            npy_dir + "pwrs_rel_beta_O1_eval+train.npy",
-            npy_dir + "pwrs_rel_theta_O1_eval+train.npy",
+            os.path.join(npy_dir, "pwrs_rel_alpha_O1_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_beta_O1_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_theta_O1_eval+train.npy"),
         ],
         [
-            npy_dir + "pwrs_rel_alpha_O2_eval+train.npy",
-            npy_dir + "pwrs_rel_beta_O2_eval+train.npy",
-            npy_dir + "pwrs_rel_theta_O2_eval+train.npy",
+            os.path.join(npy_dir, "pwrs_rel_alpha_O2_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_beta_O2_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_theta_O2_eval+train.npy"),
         ],
         [
-            npy_dir + "pwrs_rel_alpha_t3_eval+train.npy",
-            npy_dir + "pwrs_rel_beta_t3_eval+train.npy",
-            npy_dir + "pwrs_rel_theta_t3_eval+train.npy",
+            os.path.join(npy_dir, "pwrs_rel_alpha_t3_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_beta_t3_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_theta_t3_eval+train.npy"),
         ],
         [
-            npy_dir + "pwrs_rel_alpha_t4_eval+train.npy",
-            npy_dir + "pwrs_rel_beta_t4_eval+train.npy",
-            npy_dir + "pwrs_rel_theta_t4_eval+train.npy",
+            os.path.join(npy_dir, "pwrs_rel_alpha_t4_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_beta_t4_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_theta_t4_eval+train.npy"),
         ],
         [
-            npy_dir + "pwrs_rel_alpha_f7_eval+train.npy",
-            npy_dir + "pwrs_rel_beta_f7_eval+train.npy",
-            npy_dir + "pwrs_rel_theta_f7_eval+train.npy",
+            os.path.join(npy_dir, "pwrs_rel_alpha_f7_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_beta_f7_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_theta_f7_eval+train.npy"),
         ],
         [
-            npy_dir + "pwrs_rel_alpha_f8_eval+train.npy",
-            npy_dir + "pwrs_rel_beta_f8_eval+train.npy",
-            npy_dir + "pwrs_rel_theta_f8_eval+train.npy",
+            os.path.join(npy_dir, "pwrs_rel_alpha_f8_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_beta_f8_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_theta_f8_eval+train.npy"),
         ],
         [
-            npy_dir + "pwrs_rel_alpha_t5_eval+train.npy",
-            npy_dir + "pwrs_rel_beta_t5_eval+train.npy",
-            npy_dir + "pwrs_rel_theta_t5_eval+train.npy",
+            os.path.join(npy_dir, "pwrs_rel_alpha_t5_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_beta_t5_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_theta_t5_eval+train.npy"),
         ],
         [
-            npy_dir + "pwrs_rel_alpha_t6_eval+train.npy",
-            npy_dir + "pwrs_rel_beta_t6_eval+train.npy",
-            npy_dir + "pwrs_rel_theta_t6_eval+train.npy",
+            os.path.join(npy_dir, "pwrs_rel_alpha_t6_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_beta_t6_eval+train.npy"),
+            os.path.join(npy_dir, "pwrs_rel_theta_t6_eval+train.npy"),
         ],
     ]
 
@@ -228,49 +230,47 @@ def calc_zscore(input_data, input_name):
         z3 = (relative_list[2] - np.mean(sample_spectrum)) / np.std(sample_spectrum)
         result_theta.append(z3)
 
-    out_dir = os.getcwd() + "/out/"
+    # out_dir = os.getcwd() + "/out/"
+    out_dir = os.path.join(os.getcwd(), "out")
 
     # シータ波のtopomapを出力する
     fig, ax = plt.subplots(figsize=(10, 8))
     plot_topomap(result_theta, ax, fig)
     plt.title("theta_topomap")
-    plt.savefig(out_dir + "theta_save_topomap.png")
+    plt.savefig(os.path.join(out_dir, "theta_save_topomap.png"))
 
     fig, ax = plt.subplots(figsize=(10, 8))
     plot_topomap(result_alpha, ax, fig)
     plt.title("alpha_topomap")
-    plt.savefig(out_dir + "alpha_save_topomap.png")
+    plt.savefig(os.path.join(out_dir, "alpha_save_topomap.png"))
 
     fig, ax = plt.subplots(figsize=(10, 8))
     plot_topomap(result_beta, ax, fig)
     plt.title("beta_topomap")
-    plt.savefig(out_dir + "beta_save_topomap.png")
+    plt.savefig(os.path.join(out_dir, "beta_save_topomap.png"))
 
     dt_now = datetime.datetime.now()
     document = Document()
     document.add_heading("結果報告書")
     document.add_paragraph(" ")
-    # document.add_paragraph(input_data[11:])
-    # document.add_paragraph("ファイル名：")
     document.add_paragraph("作成日：" + dt_now.strftime("%Y年%m月%d日"))
 
     file_name = os.path.splitext(os.path.basename(input_data))[0] + ".m00"
-    # print("file_name: ", file_name)
-    # document.add_paragraph(file_name)
     document.add_paragraph("ファイル名：" + file_name)
-
     document.add_paragraph("インプット名：" + input_name)
     document.add_paragraph(" ")
-
-    # document.add_paragraph(input_name)
-    # document.add_paragraph("作成日：" + dt_now.strftime("%Y年%m月%d日"))
-    # document.add_paragraph(dt_now.strftime("%Y年%m月%d日"))
     document.add_paragraph("あなたのアルファ波の分布は以下のようになります。")
-    document.add_picture(out_dir + "alpha_save_topomap.png", width=Inches(3.5))
+    document.add_picture(
+        os.path.join(out_dir, "alpha_save_topomap.png", width=Inches(3.5))
+    )
     document.add_paragraph("あなたのベータ波の分布は以下のようになります。")
-    document.add_picture(out_dir + "beta_save_topomap.png", width=Inches(3.5))
+    document.add_picture(
+        os.path.join(out_dir, "beta_save_topomap.png", width=Inches(3.5))
+    )
     document.add_paragraph("あなたのシータ波の分布は以下のようになります。")
-    document.add_picture(out_dir + "theta_save_topomap.png", width=Inches(3.5))
+    document.add_picture(
+        os.path.join(out_dir, "theta_save_topomap.png", width=Inches(3.5))
+    )
 
     document.add_paragraph(
         "あなたの脳波検査の結果からZスコアを算出します。（Zスコアは1297人の正常被験者のデータセットから算出しております）"
@@ -281,10 +281,8 @@ def calc_zscore(input_data, input_name):
         document.paragraphs[13 + k].add_run(result_list[k])
 
     print("282 input_data: ", input_data)
-    document.save(
-        os.path.splitext(
-            os.path.dirname(input_data) + "/" + os.path.basename(input_data)
-        )[0]
-        + ".docx"
-    )
+
+    save_dir = os.path.dirname(input_data) + os.path.basename(input_data)
+    save_dir = os.path.splitext(save_dir)[0] + ".docx"
+    document.save(save_dir)
     print("286 document saved to input_data")

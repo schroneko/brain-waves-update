@@ -16,7 +16,7 @@ from calc_zscore import calc_zscore
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = os.getcwd() + "/out"
+UPLOAD_FOLDER = os.path.join(os.getcwd(), "out")
 ALLOWED_EXTENSIONS = set(["m00"])
 
 app = Flask(__name__)
