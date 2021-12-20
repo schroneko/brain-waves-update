@@ -21,6 +21,7 @@
   },
   "build": {
     "appId": "com.yutahayashi.app",
+    "asar": false,
     "files": [
       "npy/**/*",
       "out/**/*",
@@ -34,13 +35,7 @@
     ],
     "mac": {
       "icon": "icon.png",
-      "target": {
-        "target": "dmg",
-        "arch": [
-          "x64",
-          "arm64"
-        ]
-      }
+      "target": "dmg"
     },
     "win": {
       "icon": "icon.png",

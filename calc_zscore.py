@@ -16,10 +16,9 @@ matplotlib.use("Agg")
 
 
 def calc_zscore(input_data, input_name):
-    # input_data = os.getcwd() + "/out/" + input_data
     input_data = os.path.join(os.getcwd(), "out", input_data)
-    print("input_data: " + input_data)
-    print("input_name: " + input_name)
+    print("input_data (l20): " + input_data)
+    print("input_name (l21): " + input_name)
     df = pd.read_table(
         input_data,
         header=None,
@@ -101,7 +100,6 @@ def calc_zscore(input_data, input_name):
         "T6",
     ]
 
-    # npy_dir = os.getcwd() + "/npy/"
     npy_dir = os.path.join(os.getcwd(), "npy")
     np_load_dataset = [
         [
@@ -182,7 +180,6 @@ def calc_zscore(input_data, input_name):
         sf = 500.0
         df_analyze = df.iloc[:, i]
         df_analyze_np = df_analyze.values
-        # time = np.arange(df_analyze_np.size) / sf
 
         # Welch's periodogramを求める
         win = 4 * sf
@@ -218,19 +215,15 @@ def calc_zscore(input_data, input_name):
                 )
             )
 
-        # sample_spectrum_alpha = np.load(np_load_dataset[i][0])
         z1 = (relative_list[0] - np.mean(sample_spectrum)) / np.std(sample_spectrum)
         result_alpha.append(z1)
 
-        # sample_spectrum_beta = np.load(np_load_dataset[i][1])
         z2 = (relative_list[1] - np.mean(sample_spectrum)) / np.std(sample_spectrum)
         result_beta.append(z2)
 
-        # sample_spectrum_theta = np.load(np_load_dataset[i][2])
         z3 = (relative_list[2] - np.mean(sample_spectrum)) / np.std(sample_spectrum)
         result_theta.append(z3)
 
-    # out_dir = os.getcwd() + "/out/"
     out_dir = os.path.join(os.getcwd(), "out")
 
     # シータ波のtopomapを出力する
