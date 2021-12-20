@@ -254,15 +254,15 @@ def calc_zscore(input_data, input_name):
     document.add_paragraph(" ")
     document.add_paragraph("あなたのアルファ波の分布は以下のようになります。")
     document.add_picture(
-        os.path.join(out_dir, "alpha_save_topomap.png", width=Inches(3.5))
+        os.path.join(out_dir, "alpha_save_topomap.png"), width=Inches(3.5)
     )
     document.add_paragraph("あなたのベータ波の分布は以下のようになります。")
     document.add_picture(
-        os.path.join(out_dir, "beta_save_topomap.png", width=Inches(3.5))
+        os.path.join(out_dir, "beta_save_topomap.png"), width=Inches(3.5)
     )
     document.add_paragraph("あなたのシータ波の分布は以下のようになります。")
     document.add_picture(
-        os.path.join(out_dir, "theta_save_topomap.png", width=Inches(3.5))
+        os.path.join(out_dir, "theta_save_topomap.png"), width=Inches(3.5)
     )
 
     document.add_paragraph(
@@ -275,7 +275,13 @@ def calc_zscore(input_data, input_name):
 
     print("282 input_data: ", input_data)
 
-    save_dir = os.path.dirname(input_data) + os.path.basename(input_data)
-    save_dir = os.path.splitext(save_dir)[0] + ".docx"
+    # save_dir = os.path.join(os.path.dirname(input_data), os.path.basename(input_data))
+    save_dir = input_data.replace(".txt", ".docx")
+
+    # os.path.dirname(input_data) + os.path.basename(input_data)
+    # print("dirname: ", os.path.dirname(input_data))
+    # print("basename: ", os.path.basename(input_data))
+    # print("save_dir: ", save_dir)
+    # save_dir = os.path.splitext(save_dir)[0] + ".docx"
     document.save(save_dir)
     print("286 document saved to input_data")

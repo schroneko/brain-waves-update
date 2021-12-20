@@ -1,5 +1,7 @@
 import os
 import subprocess
+import sys
+
 
 from flask import (
     Flask,
@@ -13,6 +15,8 @@ from flask import (
 from werkzeug.utils import secure_filename
 
 from calc_zscore import calc_zscore
+
+sys.dont_write_bytecode = True
 
 app = Flask(__name__)
 
@@ -67,10 +71,10 @@ def uploads_file():
 def uploaded_file(filename):
     return send_from_directory(
         UPLOAD_FOLDER,
-        os.path.splitext(os.path.basename(filename))[0] + ".docx",
+        filename.replace(".txt", ".docx"),
         as_attachment=True,
     )
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=5000)
+    app.run(host="localhost", port=5050, debug=True)

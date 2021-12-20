@@ -6,13 +6,15 @@ let mainWindow;
 // quit after close app
 app.on('window-all-closed', function () {
   app.quit();
+  console.log('server stopped')
 });
 
 app.on('ready', function () {
   let subpy = require('child_process').spawn('python', ['app.py']);
+  // let subpy = require('child_process').spawn('flask', ['run']);
 
   const rq = require('request-promise');
-  const mainAddr = 'http://localhost:5000';
+  const mainAddr = 'http://localhost:5000/';
 
   const openWindow = function () {
     mainWindow = new BrowserWindow({
