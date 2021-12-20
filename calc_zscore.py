@@ -17,8 +17,8 @@ matplotlib.use("Agg")
 
 def calc_zscore(input_data, input_name):
     input_data = os.path.join(os.getcwd(), "out", input_data)
-    print("input_data (l20): " + input_data)
-    print("input_name (l21): " + input_name)
+    print("calc_zscore.py(l20), input_data: " + input_data)
+    print("calc_zscore.py(l21), input_name: " + input_name)
     df = pd.read_table(
         input_data,
         header=None,

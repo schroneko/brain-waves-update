@@ -10,8 +10,11 @@ app.on('window-all-closed', function () {
 });
 
 app.on('ready', function () {
+  console.log('hoge')
+  let cmd = require('child_process').spawn('node', ['--version'])
   let subpy = require('child_process').spawn('python', ['app.py']);
   // let subpy = require('child_process').spawn('flask', ['run']);
+  console.log('fuga')
 
   const rq = require('request-promise');
   const mainAddr = 'http://localhost:5000/';
@@ -42,6 +45,7 @@ app.on('ready', function () {
         openWindow();
       })
       .catch(function (err) {
+        console.log('server under error: ' + err);
         startUp();
       });
   };

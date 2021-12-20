@@ -46,7 +46,7 @@ def uploads_file():
             return redirect(request.url)
         if file and allwed_file(file.filename):
             filename = secure_filename(file.filename)
-            filename = os.path.splitext(os.path.basename(filename))[0] + ".txt"
+            filename = filename.replace(".m00", ".txt")
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
             FILE_PATH = os.path.join(app.config["UPLOAD_FOLDER"], filename)
@@ -58,8 +58,8 @@ def uploads_file():
             with open(FILE_PATH, mode="w") as f:
                 f.write(output)
 
-            print("input_data: " + filename)
-            print("input_name: " + input_name)
+            print("app.py(l61), input_data: " + filename)
+            print("app.py(l62), input_name: " + input_name)
 
             calc_zscore(filename, input_name)
 
@@ -77,4 +77,5 @@ def uploaded_file(filename):
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=5050, debug=True)
+    # app.run(host="localhost", port=5050, debug=True)
+    app.run(host="localhost", port=5000)
