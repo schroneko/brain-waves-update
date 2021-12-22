@@ -1,6 +1,8 @@
 import datetime
 import os
 
+import math
+
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,6 +16,10 @@ from topograph import get_psds_alpha, get_psds_beta, get_psds_theta, plot_topoma
 
 matplotlib.use("Agg")
 
+# Calculating alpha power difference between Fp1 and Fp2.
+def calc_alpha_diff(alpha_fp1, alpha_fp2):
+    calc_result = math.log(alpha_fp2)  - math.log(alpha_fp1)
+    return calc_result
 
 def calc_zscore(input_data, input_name):
     input_data = os.path.join(os.getcwd(), "out", input_data)
@@ -175,6 +181,8 @@ def calc_zscore(input_data, input_name):
     result_beta = []
     result_theta = []
 
+    alpha_fp1, alpha_fp2 = 0, 0
+
     # ある電極での相対スペクトル密度のZ値を求める
     for i in range(len(eeg_list)):
         sf = 500.0
@@ -193,6 +201,14 @@ def calc_zscore(input_data, input_name):
         # アルファ波の相対スペクトル密度を求める
         idx_alpha = np.logical_and(freqs >= 8, freqs <= 12)
         alpha_power = simps(psd[idx_alpha], dx=freq_res)
+
+        # Fp1とFp2のアルファ波パワーを保持する
+        if eeg_list[i] == "Fp1":
+            alpha_fp1 = alpha_power
+            print("alpha_fp1", alpha_fp1)
+        elif eeg_list[i] == "Fp2":
+            alpha_fp2 = alpha_power
+            print("alpha_fp2", alpha_fp2)
 
         # シータ波の相対スペクトル密度を求める
         idx_theta = np.logical_and(freqs >= 4, freqs <= 8)
@@ -214,7 +230,7 @@ def calc_zscore(input_data, input_name):
                     eeg_list[i], j_list[j], round(z, 2)
                 )
             )
-
+        
         z1 = (relative_list[0] - np.mean(sample_spectrum)) / np.std(sample_spectrum)
         result_alpha.append(z1)
 
@@ -223,6 +239,9 @@ def calc_zscore(input_data, input_name):
 
         z3 = (relative_list[2] - np.mean(sample_spectrum)) / np.std(sample_spectrum)
         result_theta.append(z3)
+
+    # Calculate the difference between the alpha power Fp1 with Fp2
+    calc_result = calc_alpha_diff(alpha_fp1, alpha_fp2)
 
     out_dir = os.path.join(os.getcwd(), "out")
 
@@ -273,15 +292,12 @@ def calc_zscore(input_data, input_name):
         document.add_paragraph(" ")
         document.paragraphs[13 + k].add_run(result_list[k])
 
+    document.add_paragraph("前頭葉のアルファ波左右差は" + str('{:.3g}'.format(calc_result)) + "です。")
+
+
     print("282 input_data: ", input_data)
 
-    # save_dir = os.path.join(os.path.dirname(input_data), os.path.basename(input_data))
     save_dir = input_data.replace(".txt", ".docx")
 
-    # os.path.dirname(input_data) + os.path.basename(input_data)
-    # print("dirname: ", os.path.dirname(input_data))
-    # print("basename: ", os.path.basename(input_data))
-    # print("save_dir: ", save_dir)
-    # save_dir = os.path.splitext(save_dir)[0] + ".docx"
     document.save(save_dir)
     print("286 document saved to input_data")

@@ -1,8 +1,8 @@
-docx
 Flask
 matplotlib
 numpy
 pandas
-python_docx
+python-docx
 scipy
 Werkzeug
+cython
