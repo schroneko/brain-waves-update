@@ -10,6 +10,10 @@ $ npm install
 
 $ pip install -r requirements.txt
 
+or
+
+$ pip install flask matplotlib pandas python-docx scipy
+
 $ npm start
 
 Please put the .m00 file and input name, download analized data.
