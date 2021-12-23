@@ -182,6 +182,7 @@ def calc_zscore(input_data, input_name):
     result_theta = []
 
     alpha_fp1, alpha_fp2 = 0, 0
+    relative_alpha_fp1, relative_alpha_fp2 = 0, 0
 
     # ある電極での相対スペクトル密度のZ値を求める
     for i in range(len(eeg_list)):
@@ -201,14 +202,6 @@ def calc_zscore(input_data, input_name):
         # アルファ波の相対スペクトル密度を求める
         idx_alpha = np.logical_and(freqs >= 8, freqs <= 12)
         alpha_power = simps(psd[idx_alpha], dx=freq_res)
-
-        # Fp1とFp2のアルファ波パワーを保持する
-        if eeg_list[i] == "Fp1":
-            alpha_fp1 = alpha_power
-            print("alpha_fp1", alpha_fp1)
-        elif eeg_list[i] == "Fp2":
-            alpha_fp2 = alpha_power
-            print("alpha_fp2", alpha_fp2)
 
         # シータ波の相対スペクトル密度を求める
         idx_theta = np.logical_and(freqs >= 4, freqs <= 8)
@@ -239,6 +232,23 @@ def calc_zscore(input_data, input_name):
 
         z3 = (relative_list[2] - np.mean(sample_spectrum)) / np.std(sample_spectrum)
         result_theta.append(z3)
+
+        # Fp1とFp2のアルファ波パワーを保持する
+        if eeg_list[i] == "Fp1":
+            alpha_fp1 = alpha_power
+            relative_alpha_fp1 = alpha_power / total_power
+            print("alpha_fp1", alpha_fp1)
+            print("relative_alpha_fp1", relative_alpha_fp1)
+        elif eeg_list[i] == "Fp2":
+            alpha_fp2 = alpha_power
+            relative_alpha_fp2 = alpha_power / total_power
+            print("alpha_fp2", alpha_fp2)
+            print("relative_alpha_fp2", relative_alpha_fp2)
+        
+        # relative_alpha_diffの標準偏差を求める
+        relative_alpha_diff = np.log(relative_alpha_fp2) - np.log(relative_alpha_fp1)
+        sample_spectrum_alpha_diff = np.log(np.load(np_load_dataset[1][0])) - np.log(np.load(np_load_dataset[0][0]))
+        z_alpha = (relative_alpha_diff - np.mean(sample_spectrum_alpha_diff)) / np.std(sample_spectrum_alpha_diff)
 
     # Calculate the difference between the alpha power Fp1 with Fp2
     calc_result = calc_alpha_diff(alpha_fp1, alpha_fp2)
@@ -293,7 +303,7 @@ def calc_zscore(input_data, input_name):
         document.paragraphs[13 + k].add_run(result_list[k])
 
     document.add_paragraph("前頭葉のアルファ波左右差は" + str('{:.3g}'.format(calc_result)) + "です。")
-
+    document.add_paragraph("前頭葉のアルファ波左右差の相対パワースペクトルのZ値は" + str('{:.3g}'.format(z_alpha)) + "です。")
 
     print("282 input_data: ", input_data)
 
