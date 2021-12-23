@@ -1,8 +1,5 @@
 import datetime
 import os
-
-import math
-
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,7 +15,7 @@ matplotlib.use("Agg")
 
 # Calculating alpha power difference between Fp1 and Fp2.
 def calc_alpha_diff(alpha_fp1, alpha_fp2):
-    calc_result = math.log(alpha_fp2)  - math.log(alpha_fp1)
+    calc_result = np.log(alpha_fp2)  - np.log(alpha_fp1)
     return calc_result
 
 def calc_zscore(input_data, input_name):
