@@ -2,7 +2,6 @@ import os
 import subprocess
 import sys
 
-
 from flask import (
     Flask,
     flash,
@@ -17,8 +16,6 @@ from werkzeug.utils import secure_filename
 from calc_zscore import calc_zscore
 
 sys.dont_write_bytecode = True
-
-app = Flask(__name__)
 
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "out")
 ALLOWED_EXTENSIONS = set(["m00"])
