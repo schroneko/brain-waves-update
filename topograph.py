@@ -7,11 +7,6 @@ from scipy import signal
 
 
 def get_psds_theta(data, fs=250, f_range=[4, 8]):
-    # Calculate signal power using Welch method.
-    # Input: data- mxn matrix (m: number of channels, n: samples of signals)
-    #        fs- Sampling frequency (default 128Hz)
-    #        f_range- Frequency range (default 0.5Hz to 30Hz)
-    # Output: Power values and PSD values
     powers = []
     psds = list()
     for sig in data:
@@ -24,11 +19,6 @@ def get_psds_theta(data, fs=250, f_range=[4, 8]):
 
 
 def get_psds_alpha(data, fs=250, f_range=[8, 12]):
-    # Calculate signal power using Welch method.
-    # Input: data- mxn matrix (m: number of channels, n: samples of signals)
-    #        fs- Sampling frequency (default 128Hz)
-    #        f_range- Frequency range (default 0.5Hz to 30Hz)
-    # Output: Power values and PSD values
     powers = []
     psds = list()
     for sig in data:
@@ -41,11 +31,6 @@ def get_psds_alpha(data, fs=250, f_range=[8, 12]):
 
 
 def get_psds_beta(data, fs=250, f_range=[12, 30]):
-    # Calculate signal power using Welch method.
-    # Input: data- mxn matrix (m: number of channels, n: samples of signals)
-    #        fs- Sampling frequency (default 128Hz)
-    #        f_range- Frequency range (default 0.5Hz to 30Hz)
-    # Output: Power values and PSD values
     powers = []
     psds = list()
     for sig in data:
@@ -58,12 +43,6 @@ def get_psds_beta(data, fs=250, f_range=[12, 30]):
 
 
 def plot_topomap(data, ax, fig, draw_cbar=True):
-    # Plot topographic plot of EEG data. This specialy design for Emotiv 14 electrode data.
-    # This can be change for any other arrangement by changing ch_pos (channel position array)
-    # Input: data- 1D array 14 data values
-    #        ax- Matplotlib subplot object to be plotted every thing
-    #        fig- Matplot lib figure object to draw colormap
-    #        draw_cbar- Visualize color bar in the plot
     N = 300
     xy_center = [2, 2]
     radius = 2
@@ -98,9 +77,12 @@ def plot_topomap(data, ax, fig, draw_cbar=True):
     )
 
     dr = xi[1] - xi[0]
+
+    # for i in range(N):
     for i in range(N):
         for j in range(N):
-            r = np.sqrt((xi[i] - xy_center[0]) ** 2 + (yi[j] - xy_center[1]) ** 2)
+            rss = (xi[i] - xy_center[0]) ** 2 + (yi[j] - xy_center[1]) ** 2
+            r = np.sqrt(rss)
             if (r - dr / 2) > radius:
                 zi[j, i] = "nan"
 

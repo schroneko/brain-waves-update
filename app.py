@@ -73,5 +73,12 @@ def uploaded_file(filename):
     )
 
 
+for i in range(5):
+    for j in range(5):
+        # xy_center = np.array(xy_center, dtype=int)
+        # xi = xi.tolist()
+        print(i, j)
+
+
 if __name__ == "__main__":
     app.run(host="localhost", port=5000)
