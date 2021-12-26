@@ -3,12 +3,7 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 let mainWindow;
 
-const log = require('electron-log');
-
 process.on('uncaughtException', function (err) {
-  log.error('electron:event:uncaughtException');
-  log.error(err);
-  log.error(err.stack);
   app.quit();
 });
 
@@ -20,7 +15,6 @@ app.on('window-all-closed', function () {
 
 app.on('ready', function () {
   let subpy = require('child_process').spawn('python', ['app.py']);
-  log.error()
 
   const rq = require('request-promise');
   const mainAddr = 'http://localhost:5000/';
@@ -51,7 +45,10 @@ app.on('ready', function () {
         openWindow();
       })
       .catch(function (err) {
-        console.log('server under error: ' + err);
+        // tmp_error = err;
+        // if (err == tmp_error) {
+        //   console.log('server error: ' + err);
+        // }
         startUp();
       });
   };

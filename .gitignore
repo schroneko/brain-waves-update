@@ -7,4 +7,5 @@ out/*.txt
 out/*.docx
 out/*.png
 app.spec
-build/*
+build/
+.venv/

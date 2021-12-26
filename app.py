@@ -55,9 +55,6 @@ def uploads_file():
             with open(FILE_PATH, mode="w") as f:
                 f.write(output)
 
-            print("app.py(l61), input_data: " + filename)
-            print("app.py(l62), input_name: " + input_name)
-
             calc_zscore(filename, input_name)
 
             return redirect(url_for("uploaded_file", filename=filename))
@@ -71,13 +68,6 @@ def uploaded_file(filename):
         filename.replace(".txt", ".docx"),
         as_attachment=True,
     )
-
-
-for i in range(5):
-    for j in range(5):
-        # xy_center = np.array(xy_center, dtype=int)
-        # xi = xi.tolist()
-        print(i, j)
 
 
 if __name__ == "__main__":

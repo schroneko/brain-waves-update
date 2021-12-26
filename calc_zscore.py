@@ -23,8 +23,6 @@ def calc_alpha_diff(alpha_fp1, alpha_fp2):
 
 def calc_zscore(input_data, input_name):
     input_data = os.path.join(os.getcwd(), "out", input_data)
-    print("calc_zscore.py(l20), input_data: " + input_data)
-    print("calc_zscore.py(l21), input_name: " + input_name)
     df = pd.read_table(
         input_data,
         header=None,
@@ -186,6 +184,10 @@ def calc_zscore(input_data, input_name):
     alpha_fp1, alpha_fp2 = 0, 0
     rel_alpha_fp1, rel_alpha_fp2 = 0, 0
 
+    # theta_fp1, theta_fp2 = 0, 0
+    # beta_fp1, beta_fp2 = 0, 0
+    theta_beta_fp1, theta_beta_fp2 = 0, 0
+
     # ある電極での相対スペクトル密度のZ値を求める
     for i in range(len(eeg_list)):
         sf = 500.0
@@ -217,12 +219,12 @@ def calc_zscore(input_data, input_name):
 
         # それぞれの電極で計算する
 
-        data_mean = np.mean(sample_spectrum)
-        data_std = np.std(sample_spectrum)
-
         for j in range(3):
             # 標準偏差を求める
             sample_spectrum = np.load(np_load_dataset[i][j])
+            data_mean = np.mean(sample_spectrum)
+            data_std = np.std(sample_spectrum)
+
             z = (relative_list[j] - data_mean) / data_std
             result_list.append(
                 "{}電極の{}波の相対パワースペクトルのZ値は{}です。".format(
@@ -239,29 +241,45 @@ def calc_zscore(input_data, input_name):
         z3 = (relative_list[2] - data_mean) / data_std
         result_theta.append(z3)
 
-        # Fp1とFp2のアルファ波パワーを保持する
+        # Fp1とFp2のアルファ波パワーの差とZ値を求める
+        # Fp1とFp2のシータ波パワー/ベータ波パワーとZ値を求める
         if eeg_list[i] == "Fp1":
             alpha_fp1 = alpha_power
-            rel_alpha_fp1 = alpha_power / total_power
-            print("alpha_fp1", alpha_fp1)
-            print("rel_alpha_fp1", rel_alpha_fp1)
+            rel_alpha_fp1 = relative_alpha
+            theta_beta_fp1 = theta_power / beta_power  # = rel_theta / rel_beta
+
+            # theta_betaの標準偏差を求める
+            spectrum_theta_beta_fp1 = np.load(np_load_dataset[0][2]) / np.load(
+                np_load_dataset[0][1]
+            )
+            z_theta_beta_fp1 = (
+                theta_beta_fp1 - np.mean(spectrum_theta_beta_fp1)
+            ) / np.std(spectrum_theta_beta_fp1)
+
         elif eeg_list[i] == "Fp2":
             alpha_fp2 = alpha_power
-            rel_alpha_fp2 = alpha_power / total_power
-            print("alpha_fp2", alpha_fp2)
-            print("rel_alpha_fp2", rel_alpha_fp2)
+            rel_alpha_fp2 = relative_alpha
+            theta_beta_fp2 = theta_power / beta_power  # = rel_theta / rel_beta
 
-        # rel_alpha_diffの標準偏差を求める
-        rel_alpha_diff = np.log(rel_alpha_fp2) - np.log(rel_alpha_fp1)
-        sample_spectrum_diff = np.log(np.load(np_load_dataset[1][0])) - np.log(
-            np.load(np_load_dataset[0][0])
-        )
-        z_alpha = (rel_alpha_diff - np.mean(sample_spectrum_diff)) / np.std(
-            sample_spectrum_diff
-        )
+            # rel_alpha_diffの標準偏差を求める
+            rel_alpha_diff = np.log(rel_alpha_fp2) - np.log(rel_alpha_fp1)
+            sample_spectrum_diff = np.log(np.load(np_load_dataset[1][0])) - np.log(
+                np.load(np_load_dataset[0][0])
+            )
+            z_alpha = (rel_alpha_diff - np.mean(sample_spectrum_diff)) / np.std(
+                sample_spectrum_diff
+            )
 
-    # Calculate the difference between the alpha power Fp1 with Fp2
-    calc_result = calc_alpha_diff(alpha_fp1, alpha_fp2)
+            # Calculate the difference between the alpha power Fp1 with Fp2
+            calc_result = calc_alpha_diff(alpha_fp1, alpha_fp2)
+
+            # theta_betaの標準偏差を求める
+            spectrum_theta_beta_fp2 = np.load(np_load_dataset[1][2]) / np.load(
+                np_load_dataset[1][1]
+            )
+            z_theta_beta_fp2 = (
+                theta_beta_fp2 - np.mean(spectrum_theta_beta_fp2)
+            ) / np.std(spectrum_theta_beta_fp2)
 
     out_dir = os.path.join(os.getcwd(), "out")
 
@@ -318,10 +336,19 @@ def calc_zscore(input_data, input_name):
     document.add_paragraph(
         "前頭葉のアルファ波左右差の相対パワースペクトルのZ値は" + str("{:.3g}".format(z_alpha)) + "です。"
     )
-
-    print("282 input_data: ", input_data)
+    document.add_paragraph(
+        "前頭葉（右）のシータ波/ベータ波の比率は" + str("{:.3g}".format(theta_beta_fp1)) + "です。"
+    )
+    document.add_paragraph(
+        "前頭葉（左）のシータ波/ベータ波の比率は" + str("{:.3g}".format(theta_beta_fp2)) + "です。"
+    )
+    document.add_paragraph(
+        "前頭葉（右）のシータ波/ベータ波のZ値は" + str("{:.3g}".format(z_theta_beta_fp1)) + "です。"
+    )
+    document.add_paragraph(
+        "前頭葉（左）のシータ波/ベータ波のZ値は" + str("{:.3g}".format(z_theta_beta_fp2)) + "です。"
+    )
 
     save_dir = input_data.replace(".txt", ".docx")
 
     document.save(save_dir)
-    print("286 document saved to input_data")
