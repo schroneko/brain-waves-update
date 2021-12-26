@@ -3,6 +3,8 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 let mainWindow;
 
+const path = require('path');
+
 process.on('uncaughtException', function (err) {
   app.quit();
 });
@@ -14,7 +16,8 @@ app.on('window-all-closed', function () {
 });
 
 app.on('ready', function () {
-  let subpy = require('child_process').spawn('python', ['app.py']);
+  // let python = require('child_process').spawn('python3', ['app.py']);
+  let python = require('child_process').spawn('python', [path.join(__dirname, 'app.py')]);
 
   const rq = require('request-promise');
   const mainAddr = 'http://localhost:5000/';

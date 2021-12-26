@@ -27,11 +27,10 @@
       "npy/**/*",
       "out/**/*",
       "templates/**/*",
+      "main.js",
+      "package.json",
       "app.py",
       "calc_zscore.py",
-      "main.js",
-      "package-lock.json",
-      "package.json",
       "topograph.py"
     ],
     "mac": {
