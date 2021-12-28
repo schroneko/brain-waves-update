@@ -25,7 +25,8 @@ app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
-def allwed_file(filename):
+def allowed_file(filename):
+    print("filename(allowed_file):", filename)
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
@@ -37,13 +38,18 @@ def uploads_file():
             return redirect(request.url)
         file = request.files["file"]
         input_name = request.form["text"]
+        print("file.filename(l41):", file.filename)
 
         if file.filename == "":
             flash("File is not found.")
             return redirect(request.url)
-        if file and allwed_file(file.filename):
-            filename = secure_filename(file.filename)
+        if file and allowed_file(file.filename):
+            print("file.filename(l46):", file.filename)
+            # filename = secure_filename(file.filename)
+            filename = file.filename
+            print("filename(l48):", filename)
             filename = filename.replace(".m00", ".txt")
+            print("filename(l50):", filename)
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
             FILE_PATH = os.path.join(app.config["UPLOAD_FOLDER"], filename)

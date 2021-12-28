@@ -23,6 +23,8 @@ def calc_alpha_diff(alpha_fp1, alpha_fp2):
 
 def calc_zscore(input_data, input_name):
     input_data = os.path.join(os.getcwd(), "out", input_data)
+    out_dir = os.path.join(os.getcwd(), "out")
+
     df = pd.read_table(
         input_data,
         header=None,
@@ -183,9 +185,6 @@ def calc_zscore(input_data, input_name):
 
     alpha_fp1, alpha_fp2 = 0, 0
     rel_alpha_fp1, rel_alpha_fp2 = 0, 0
-
-    # theta_fp1, theta_fp2 = 0, 0
-    # beta_fp1, beta_fp2 = 0, 0
     theta_beta_fp1, theta_beta_fp2 = 0, 0
 
     # ある電極での相対スペクトル密度のZ値を求める
@@ -216,6 +215,17 @@ def calc_zscore(input_data, input_name):
         relative_beta = beta_power / total_power
         relative_theta = theta_power / total_power
         relative_list = [relative_alpha, relative_beta, relative_theta]
+
+        # 脳波データの周波数スペクトルを求める
+        x = freqs
+        y = psd
+        plt.plot(x, y)
+        plt.title("EEG-" + eeg_list[i])
+        plt.xlabel("Frequency [Hz]")
+        plt.ylabel("Power [μV]")
+        plt.xlim(0, 20)
+        plt.savefig(os.path.join(out_dir, "EEG-" + eeg_list[i] + ".png"))
+        plt.clf()
 
         # それぞれの電極で計算する
 
@@ -281,8 +291,6 @@ def calc_zscore(input_data, input_name):
                 theta_beta_fp2 - np.mean(spectrum_theta_beta_fp2)
             ) / np.std(spectrum_theta_beta_fp2)
 
-    out_dir = os.path.join(os.getcwd(), "out")
-
     # シータ波のtopomapを出力する
     fig, ax = plt.subplots(figsize=(10, 8))
     plot_topomap(result_theta, ax, fig)
@@ -298,6 +306,8 @@ def calc_zscore(input_data, input_name):
     plot_topomap(result_beta, ax, fig)
     plt.title("beta_topomap")
     plt.savefig(os.path.join(out_dir, "beta_save_topomap.png"))
+
+    plt.clf()
 
     dt_now = datetime.datetime.now()
     document = Document()
@@ -348,6 +358,10 @@ def calc_zscore(input_data, input_name):
     document.add_paragraph(
         "前頭葉（左）のシータ波/ベータ波のZ値は" + str("{:.3g}".format(z_theta_beta_fp2)) + "です。"
     )
+    for i in range(len(eeg_list)):
+        document.add_picture(
+            os.path.join(out_dir, "EEG-" + eeg_list[i] + ".png"), width=Inches(3.5)
+        )
 
     save_dir = input_data.replace(".txt", ".docx")
 
