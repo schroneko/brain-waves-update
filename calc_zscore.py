@@ -291,6 +291,19 @@ def calc_zscore(input_data, input_name):
                 theta_beta_fp2 - np.mean(spectrum_theta_beta_fp2)
             ) / np.std(spectrum_theta_beta_fp2)
 
+            # theta_betaの前頭葉左右差とZ値を求める
+            theta_beta_diff = theta_beta_fp2 - theta_beta_fp1
+
+            sample_spectrum_diff = np.log(np.load(np_load_dataset[1][0])) - np.log(
+                np.load(np_load_dataset[0][0])
+            )
+
+            spectrum_theta_beta_diff = spectrum_theta_beta_fp2 - spectrum_theta_beta_fp1
+
+            z_theta_beta_diff = (
+                theta_beta_diff - np.mean(spectrum_theta_beta_diff)
+            ) / np.std(spectrum_theta_beta_diff)
+
     # シータ波のtopomapを出力する
     fig, ax = plt.subplots(figsize=(10, 8))
     plot_topomap(result_theta, ax, fig)
@@ -357,6 +370,12 @@ def calc_zscore(input_data, input_name):
     )
     document.add_paragraph(
         "前頭葉（左）のシータ波/ベータ波のZ値は" + str("{:.3g}".format(z_theta_beta_fp2)) + "です。"
+    )
+    document.add_paragraph(
+        "前頭葉のシータ波/ベータ波の左右差は" + str("{:.3g}".format(theta_beta_diff)) + "です。"
+    )
+    document.add_paragraph(
+        "前頭葉のシータ波/ベータ波の左右差のZ値は" + str("{:.3g}".format(z_theta_beta_diff)) + "です。"
     )
     for i in range(len(eeg_list)):
         document.add_picture(
