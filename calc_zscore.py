@@ -15,10 +15,10 @@ from topograph import get_psds_alpha, get_psds_beta, get_psds_theta, plot_topoma
 matplotlib.use("Agg")
 
 
-# Calculating alpha power difference between Fp1 and Fp2.
-def calc_alpha_diff(alpha_fp1, alpha_fp2):
-    calc_result = np.log(alpha_fp2) - np.log(alpha_fp1)
-    return calc_result
+# # Calculating alpha power difference between Fp1 and Fp2.
+# def calc_alpha_diff(alpha_fp1, alpha_fp2):
+#     calc_result = np.log(alpha_fp2) - np.log(alpha_fp1)
+#     return calc_result
 
 
 def calc_zscore(input_data, input_name):
@@ -188,7 +188,7 @@ def calc_zscore(input_data, input_name):
 
     alpha_fp1, alpha_fp2 = 0, 0
     rel_alpha_fp1, rel_alpha_fp2 = 0, 0
-    theta_beta_fp1, theta_beta_fp2 = 0, 0
+    beta_theta_fp1, beta_theta_fp2 = 0, 0
 
     # ある電極での相対スペクトル密度のZ値を求める
     for i in range(len(eeg_list)):
@@ -254,58 +254,61 @@ def calc_zscore(input_data, input_name):
         z3 = (relative_list[2] - data_mean) / data_std
         result_theta.append(z3)
 
+        pwrs_rel_alpha_fp1 = np_load_dataset[0][0]
+        pwrs_rel_beta_fp1 = np_load_dataset[0][1]
+        pwrs_rel_theta_fp1 = np_load_dataset[0][2]
+        pwrs_rel_alpha_fp2 = np_load_dataset[1][0]
+        pwrs_rel_beta_fp2 = np_load_dataset[1][1]
+        pwrs_rel_theta_fp2 = np_load_dataset[1][2]
+
         # Fp1とFp2のアルファ波パワーの差とZ値を求める
         # Fp1とFp2のシータ波パワー/ベータ波パワーとZ値を求める
         if eeg_list[i] == "Fp1":
             alpha_fp1 = alpha_power
             rel_alpha_fp1 = relative_alpha
-            theta_beta_fp1 = theta_power / beta_power  # = rel_theta / rel_beta
+            beta_theta_fp1 = beta_power / theta_power  # = rel_beta / rel_theta
 
-            # theta_betaの標準偏差を求める
-            spectrum_theta_beta_fp1 = np.load(np_load_dataset[0][2]) / np.load(
-                np_load_dataset[0][1]
+            # beta_thetaの標準偏差を求める
+            spectrum_beta_theta_fp1 = np.load(pwrs_rel_beta_fp1) / np.load(
+                pwrs_rel_theta_fp1
             )
-            z_theta_beta_fp1 = (
-                theta_beta_fp1 - np.mean(spectrum_theta_beta_fp1)
-            ) / np.std(spectrum_theta_beta_fp1)
+            z_beta_theta_fp1 = (
+                beta_theta_fp1 - np.mean(spectrum_beta_theta_fp1)
+            ) / np.std(spectrum_beta_theta_fp1)
 
         elif eeg_list[i] == "Fp2":
             alpha_fp2 = alpha_power
             rel_alpha_fp2 = relative_alpha
-            theta_beta_fp2 = theta_power / beta_power  # = rel_theta / rel_beta
+            beta_theta_fp2 = beta_power / theta_power  # = rel_beta / rel_theta
 
             # rel_alpha_diffの標準偏差を求める
             rel_alpha_diff = np.log(rel_alpha_fp2) - np.log(rel_alpha_fp1)
-            sample_spectrum_diff = np.log(np.load(np_load_dataset[1][0])) - np.log(
-                np.load(np_load_dataset[0][0])
+            spectrum_alpha_diff = np.log(np.load(pwrs_rel_alpha_fp2)) - np.log(
+                np.load(pwrs_rel_alpha_fp1)
             )
-            z_alpha = (rel_alpha_diff - np.mean(sample_spectrum_diff)) / np.std(
-                sample_spectrum_diff
+            z_alpha_diff = (rel_alpha_diff - np.mean(spectrum_alpha_diff)) / np.std(
+                spectrum_alpha_diff
             )
 
             # Calculate the difference between the alpha power Fp1 with Fp2
-            calc_result = calc_alpha_diff(alpha_fp1, alpha_fp2)
+            calc_result = np.log(alpha_fp2) - np.log(alpha_fp1)
 
-            # theta_betaの標準偏差を求める
-            spectrum_theta_beta_fp2 = np.load(np_load_dataset[1][2]) / np.load(
-                np_load_dataset[1][1]
+            # beta_thetaの標準偏差を求める
+            spectrum_beta_theta_fp2 = np.load(pwrs_rel_beta_fp2) / np.load(
+                pwrs_rel_theta_fp2
             )
-            z_theta_beta_fp2 = (
-                theta_beta_fp2 - np.mean(spectrum_theta_beta_fp2)
-            ) / np.std(spectrum_theta_beta_fp2)
+            z_beta_theta_fp2 = (
+                beta_theta_fp2 - np.mean(spectrum_beta_theta_fp2)
+            ) / np.std(spectrum_beta_theta_fp2)
 
-            # theta_betaの前頭葉左右差とZ値を求める
-            theta_beta_diff = theta_beta_fp2 - theta_beta_fp1
+            # beta_thetaの前頭葉左右差とZ値を求める
+            beta_theta_diff = beta_theta_fp2 - beta_theta_fp1
 
-            sample_spectrum_diff = np.log(np.load(np_load_dataset[1][0])) - np.log(
-                np.load(np_load_dataset[0][0])
-            )
+            spectrum_beta_theta_diff = spectrum_beta_theta_fp2 - spectrum_beta_theta_fp1
 
-            spectrum_theta_beta_diff = spectrum_theta_beta_fp2 - spectrum_theta_beta_fp1
-
-            z_theta_beta_diff = (
-                theta_beta_diff - np.mean(spectrum_theta_beta_diff)
-            ) / np.std(spectrum_theta_beta_diff)
+            z_beta_theta_diff = (
+                beta_theta_diff - np.mean(spectrum_beta_theta_diff)
+            ) / np.std(spectrum_beta_theta_diff)
 
     # シータ波のtopomapを出力する
     fig, ax = plt.subplots(figsize=(10, 8))
@@ -360,25 +363,25 @@ def calc_zscore(input_data, input_name):
         "前頭葉のアルファ波左右差の値は" + str("{:.3g}".format(calc_result)) + "です。"
     )
     document.add_paragraph(
-        "前頭葉のアルファ波左右差の相対パワースペクトルのZ値は" + str("{:.3g}".format(z_alpha)) + "です。"
+        "前頭葉のアルファ波左右差の相対パワースペクトルのZ値は" + str("{:.3g}".format(z_alpha_diff)) + "です。"
     )
     document.add_paragraph(
-        "前頭葉（右）のシータ波/ベータ波の比率は" + str("{:.3g}".format(theta_beta_fp1)) + "です。"
+        "前頭葉（右）のベータ波/シータ波の比率は" + str("{:.3g}".format(beta_theta_fp1)) + "です。"
     )
     document.add_paragraph(
-        "前頭葉（左）のシータ波/ベータ波の比率は" + str("{:.3g}".format(theta_beta_fp2)) + "です。"
+        "前頭葉（左）のベータ波/シータ波の比率は" + str("{:.3g}".format(beta_theta_fp2)) + "です。"
     )
     document.add_paragraph(
-        "前頭葉（右）のシータ波/ベータ波のZ値は" + str("{:.3g}".format(z_theta_beta_fp1)) + "です。"
+        "前頭葉（右）のベータ波/シータ波のZ値は" + str("{:.3g}".format(z_beta_theta_fp1)) + "です。"
     )
     document.add_paragraph(
-        "前頭葉（左）のシータ波/ベータ波のZ値は" + str("{:.3g}".format(z_theta_beta_fp2)) + "です。"
+        "前頭葉（左）のベータ波/シータ波のZ値は" + str("{:.3g}".format(z_beta_theta_fp2)) + "です。"
     )
     document.add_paragraph(
-        "前頭葉のシータ波/ベータ波の左右差は" + str("{:.3g}".format(theta_beta_diff)) + "です。"
+        "前頭葉のベータ波/シータ波の左右差は" + str("{:.3g}".format(beta_theta_diff)) + "です。"
     )
     document.add_paragraph(
-        "前頭葉のシータ波/ベータ波の左右差のZ値は" + str("{:.3g}".format(z_theta_beta_diff)) + "です。"
+        "前頭葉のベータ波/シータ波の左右差のZ値は" + str("{:.3g}".format(z_beta_theta_diff)) + "です。"
     )
     for i in range(len(eeg_list)):
         document.add_picture(

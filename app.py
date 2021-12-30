@@ -1,7 +1,15 @@
 import os
 import sys
 
-from flask import Flask, flash, redirect, render_template, request, send_from_directory, url_for
+from flask import (
+    Flask,
+    flash,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+    url_for,
+)
 
 from calc_zscore import calc_zscore
 
@@ -22,31 +30,31 @@ def allowed_file(filename):
 
 @app.route("/", methods=["GET", "POST"])
 def uploads_file():
-    try:
-        if request.method == "POST":
-            if "file" not in request.files:
-                flash("File is not found.")
-                return redirect(request.url)
-            file = request.files["file"]
-            input_name = request.form["text"]
-            print("file.filename(l41):", file.filename)
+    if request.method == "POST":
+        if "file" not in request.files:
+            flash("File is not found.")
+            return redirect(request.url)
+        file = request.files["file"]
+        input_name = request.form["text"]
+        print("file.filename(l41):", file.filename)
 
+        if file.filename == "":
+            flash("File is not found.")
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = file.filename
+            print("filename(l48):", filename)
+            # file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
             try:
-                if file.filename == "":
-                    flash("File is not found.")
-                    return redirect(request.url)
-                if file and allowed_file(file.filename):
-                    filename = file.filename
-                    print("filename(l48):", filename)
-                    file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-
-                    calc_zscore(filename, input_name)
-
-                    return redirect(url_for("uploaded_file", filename=filename))
+                file.save(os.path.join(os.getcwd(), "out", filename))
+            except Exception:
+                return render_template("index2.html")
+            try:
+                calc_zscore(filename, input_name)
             except Exception:
                 return render_template("index3.html")
-    except Exception:
-        return render_template("index2.html")
+
+            return redirect(url_for("uploaded_file", filename=filename))
     return render_template("index.html")
 
 
