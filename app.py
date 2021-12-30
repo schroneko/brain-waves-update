@@ -2,18 +2,12 @@ import os
 import subprocess
 import sys
 
-from flask import (
-    Flask,
-    flash,
-    redirect,
-    render_template,
-    request,
-    send_from_directory,
-    url_for,
-)
-from werkzeug.utils import secure_filename
+from flask import Flask, flash, redirect, render_template, request, send_from_directory, url_for
 
 from calc_zscore import calc_zscore
+
+# from werkzeug.utils import secure_filename
+
 
 sys.dont_write_bytecode = True
 

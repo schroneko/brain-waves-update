@@ -18,6 +18,7 @@ app.on('window-all-closed', function () {
 app.on('ready', function () {
   // let python = require('child_process').spawn('python3', ['app.py']);
   let python = require('child_process').spawn('python', [path.join(__dirname, 'app.py')]);
+  python.unref()
 
   const rq = require('request-promise');
   const mainAddr = 'http://localhost:5000/';
