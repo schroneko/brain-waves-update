@@ -51,7 +51,7 @@ def uploads_file():
                     FILE_PATH = os.path.join(app.config["UPLOAD_FOLDER"], filename)
                     if os.name == 'nt':
                         output = subprocess.check_output(
-                            ["type", FILE_PATH], stderr=subprocess.PIPE
+                            ["type", FILE_PATH], stderr=subprocess.PIPE, shell=true
                         )
                     elif os.name == 'posix':
                         output = subprocess.check_output(
