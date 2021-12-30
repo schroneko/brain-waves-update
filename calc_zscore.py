@@ -15,12 +15,6 @@ from topograph import get_psds_alpha, get_psds_beta, get_psds_theta, plot_topoma
 matplotlib.use("Agg")
 
 
-# # Calculating alpha power difference between Fp1 and Fp2.
-# def calc_alpha_diff(alpha_fp1, alpha_fp2):
-#     calc_result = np.log(alpha_fp2) - np.log(alpha_fp1)
-#     return calc_result
-
-
 def calc_zscore(input_data, input_name):
     input_data = os.path.join(os.getcwd(), "out", input_data)
     out_dir = os.path.join(os.getcwd(), "out")
@@ -291,7 +285,7 @@ def calc_zscore(input_data, input_name):
             )
 
             # Calculate the difference between the alpha power Fp1 with Fp2
-            calc_result = np.log(alpha_fp2) - np.log(alpha_fp1)
+            alpha_diff = np.log(alpha_fp2) - np.log(alpha_fp1)
 
             # beta_thetaの標準偏差を求める
             spectrum_beta_theta_fp2 = np.load(pwrs_rel_beta_fp2) / np.load(
@@ -359,9 +353,7 @@ def calc_zscore(input_data, input_name):
         document.add_paragraph(" ")
         document.paragraphs[13 + k].add_run(result_list[k])
 
-    document.add_paragraph(
-        "前頭葉のアルファ波左右差の値は" + str("{:.3g}".format(calc_result)) + "です。"
-    )
+    document.add_paragraph("前頭葉のアルファ波左右差の値は" + str("{:.3g}".format(alpha_diff)) + "です。")
     document.add_paragraph(
         "前頭葉のアルファ波左右差の相対パワースペクトルのZ値は" + str("{:.3g}".format(z_alpha_diff)) + "です。"
     )
