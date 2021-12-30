@@ -25,10 +25,13 @@ def calc_zscore(input_data, input_name):
     input_data = os.path.join(os.getcwd(), "out", input_data)
     out_dir = os.path.join(os.getcwd(), "out")
 
+    print("input_data: ", input_data)
+
     df = pd.read_table(
         input_data,
         header=None,
         delim_whitespace=True,
+        skiprows=2,
         names=(
             "Date1",
             "Date2",
@@ -382,6 +385,6 @@ def calc_zscore(input_data, input_name):
             os.path.join(out_dir, "EEG-" + eeg_list[i] + ".png"), width=Inches(3.5)
         )
 
-    save_dir = input_data.replace(".txt", ".docx")
+    save_dir = input_data.replace(".m00", ".docx")
 
     document.save(save_dir)
