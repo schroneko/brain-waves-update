@@ -26,38 +26,49 @@ def allowed_file(filename):
 
 @app.route("/", methods=["GET", "POST"])
 def uploads_file():
-    if request.method == "POST":
-        if "file" not in request.files:
-            flash("File is not found.")
-            return redirect(request.url)
-        file = request.files["file"]
-        input_name = request.form["text"]
-        print("file.filename(l41):", file.filename)
+    try:
+        if request.method == "POST":
+            if "file" not in request.files:
+                flash("File is not found.")
+                return redirect(request.url)
+            file = request.files["file"]
+            input_name = request.form["text"]
+            print("file.filename(l41):", file.filename)
 
-        if file.filename == "":
-            flash("File is not found.")
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            print("file.filename(l46):", file.filename)
-            # filename = secure_filename(file.filename)
-            filename = file.filename
-            print("filename(l48):", filename)
-            filename = filename.replace(".m00", ".txt")
-            print("filename(l50):", filename)
-            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            try:
+                if file.filename == "":
+                    flash("File is not found.")
+                    return redirect(request.url)
+                if file and allowed_file(file.filename):
+                    print("file.filename(l46):", file.filename)
+                    # filename = secure_filename(file.filename)
+                    filename = file.filename
+                    print("filename(l48):", filename)
+                    filename = filename.replace(".m00", ".txt")
+                    print("filename(l50):", filename)
+                    file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
-            FILE_PATH = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-            output = subprocess.check_output(
-                ["sed", "1,2d", FILE_PATH], stderr=subprocess.PIPE
-            )
-            output = output.decode("utf8")
+                    FILE_PATH = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+                    if os.name == 'nt':
+                        output = subprocess.check_output(
+                            ["type", FILE_PATH], stderr=subprocess.PIPE
+                        )
+                    elif os.name == 'posix':
+                        output = subprocess.check_output(
+                            ["sed", "1,2d", FILE_PATH], stderr=subprocess.PIPE
+                        )
+                    output = output.decode("utf8")
 
-            with open(FILE_PATH, mode="w") as f:
-                f.write(output)
+                    with open(FILE_PATH, mode="w") as f:
+                        f.write(output)
 
-            calc_zscore(filename, input_name)
+                    calc_zscore(filename, input_name)
 
-            return redirect(url_for("uploaded_file", filename=filename))
+                    return redirect(url_for("uploaded_file", filename=filename))
+            except Exception:
+                return render_template("index3.html")
+    except Exception:
+        return render_template("index2.html")
     return render_template("index.html")
 
 
