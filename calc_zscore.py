@@ -1,8 +1,10 @@
 import datetime
 import os
+import pathlib
 
 import matplotlib
 import matplotlib.pyplot as plt
+import mne
 import numpy as np
 import pandas as pd
 from docx import Document
@@ -19,58 +21,71 @@ def calc_zscore(input_data, input_name):
     input_data = os.path.join(os.getcwd(), "out", input_data)
     out_dir = os.path.join(os.getcwd(), "out")
 
-    print("input_data: ", input_data)
+    if input_data.endswith(".m00"):
+        df = pd.read_table(
+            input_data,
+            delim_whitespace=True,
+            skiprows=1,
+        )
+    elif input_data.endswith(".edf"):
+        edf_data = mne.io.read_raw_edf(input_data)
+        labels = edf_data.ch_names
+        edf_data = edf_data.get_data()
+        df = pd.DataFrame(edf_data, index=labels).T
+        df[:][:] *= 1000000
 
-    df = pd.read_table(
-        input_data,
-        header=None,
-        delim_whitespace=True,
-        skiprows=2,
-        names=(
-            "Date1",
-            "Date2",
-            "Fp1",
-            "Fp2",
-            "F7",
-            "F8",
-            "C3",
-            "C4",
-            "T3",
-            "T4",
-            "T5",
-            "T6",
-            "O1",
-            "O2",
-            "X1",
-            "Other1",
-            "Other2",
-        ),
-    )
+    if df.columns.str.contains("Fp1-A1").any():
+        df = df.filter(
+            items=[
+                "Fp1-A1",
+                "Fp2-A2",
+                "C3-A1",
+                "C4-A2",
+                "O1-A1",
+                "O2-A2",
+                "T3-A1",
+                "T4-A2",
+                "F7-A1",
+                "F8-A2",
+                "T5-A1",
+                "T6-A2",
+            ]
+        )
 
-    # dfの列を並び替える
-    df = df[
-        [
-            "Date1",
-            "Date2",
-            "Fp1",
-            "Fp2",
-            "C3",
-            "C4",
-            "O1",
-            "O2",
-            "T3",
-            "T4",
-            "X1",
-            "F7",
-            "F8",
-            "T5",
-            "T6",
-            "Other1",
-            "Other2",
-        ]
+    # if file extension is .edf
+    elif df.columns.str.contains("FP1-REF").any():
+        df = df.filter(
+            items=[
+                "EEG FP1-REF",
+                "EEG FP2-REF",
+                "EEG C3-REF",
+                "EEG C4-REF",
+                "EEG O1-REF",
+                "EEG O2-REF",
+                "EEG T3-REF",
+                "EEG T4-REF",
+                "EEG F7-REF",
+                "EEG F8-REF",
+                "EEG T5-REF",
+                "EEG T6-REF",
+            ]
+        )
+
+    df.columns = [
+        "Fp1",
+        "Fp2",
+        "C3",
+        "C4",
+        "O1",
+        "O2",
+        "T3",
+        "T4",
+        "F7",
+        "F8",
+        "T5",
+        "T6",
     ]
 
-    df.drop(columns=["Date1", "Date2", "X1", "Other1", "Other2"], inplace=True)
     # 欠損値が１つでもある行を削除する
     df = df.dropna(how="any")
 
@@ -186,7 +201,11 @@ def calc_zscore(input_data, input_name):
 
     # ある電極での相対スペクトル密度のZ値を求める
     for i in range(len(eeg_list)):
-        sf = 500.0
+        if input_data.endswith(".m00"):
+            dt = 2 * 10 ** (-3)
+        if input_data.endswith(".edf"):
+            dt = 4 * 10 ** (-3)
+        sf = 1 / dt
         df_analyze = df.iloc[:, i]
         df_analyze_np = df_analyze.values
 
@@ -216,11 +235,13 @@ def calc_zscore(input_data, input_name):
         # 脳波データの周波数スペクトルを求める
         x = freqs
         y = psd
+
         plt.plot(x, y)
+        plt.ticklabel_format(style="plain", axis="y", useOffset=False)
         plt.title("EEG-" + eeg_list[i])
         plt.xlabel("Frequency [Hz]")
         plt.ylabel("Power [μV]")
-        plt.xlim(0, 20)
+        # plt.xlim(0, 20)
         plt.savefig(os.path.join(out_dir, "EEG-" + eeg_list[i] + ".png"))
         plt.clf()
 
@@ -328,7 +349,8 @@ def calc_zscore(input_data, input_name):
     document.add_paragraph(" ")
     document.add_paragraph("作成日：" + dt_now.strftime("%Y年%m月%d日"))
 
-    file_name = os.path.splitext(os.path.basename(input_data))[0] + ".m00"
+    file_name = os.path.basename(input_data)
+
     document.add_paragraph("ファイル名：" + file_name)
     document.add_paragraph("インプット名：" + input_name)
     document.add_paragraph(" ")
@@ -380,6 +402,8 @@ def calc_zscore(input_data, input_name):
             os.path.join(out_dir, "EEG-" + eeg_list[i] + ".png"), width=Inches(3.5)
         )
 
-    save_dir = input_data.replace(".m00", ".docx")
+    extension = pathlib.PurePath(input_data).suffix
+
+    save_dir = input_data.replace(extension, ".docx")
 
     document.save(save_dir)

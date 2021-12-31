@@ -1,4 +1,5 @@
 import os
+import pathlib
 import sys
 
 from flask import (
@@ -16,7 +17,7 @@ from calc_zscore import calc_zscore
 sys.dont_write_bytecode = True
 
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "out")
-ALLOWED_EXTENSIONS = set(["m00"])
+ALLOWED_EXTENSIONS = set(["m00", "edf"])
 
 app = Flask(__name__)
 
@@ -24,7 +25,6 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
 def allowed_file(filename):
-    print("filename(allowed_file):", filename)
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
@@ -36,15 +36,15 @@ def uploads_file():
             return redirect(request.url)
         file = request.files["file"]
         input_name = request.form["text"]
-        print("file.filename(l41):", file.filename)
 
         if file.filename == "":
             flash("File is not found.")
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = file.filename
-            print("filename(l48):", filename)
-            file.save(os.path.join(os.chdir(".."), "out", filename))
+            # For Windows Installer
+            # file.save(os.path.join(os.chdir(".."), "out", filename))
+            file.save(os.path.join(os.getcwd(), "out", filename))
             calc_zscore(filename, input_name)
 
             return redirect(url_for("uploaded_file", filename=filename))
@@ -53,9 +53,11 @@ def uploads_file():
 
 @app.route("/out/<filename>")
 def uploaded_file(filename):
+    extension = pathlib.PurePath(filename).suffix
     return send_from_directory(
         UPLOAD_FOLDER,
-        filename.replace(".m00", ".docx"),
+        # filename.replace(".m00", ".docx"),
+        filename.replace(extension, ".docx"),
         as_attachment=True,
     )
 
