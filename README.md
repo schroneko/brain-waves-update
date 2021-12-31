@@ -2,18 +2,17 @@
 
 ## How to setup
 
-$ git clone https://github.com/schroneko/eeg-analysis-electron
+Please put the .m00 or .edf file and input name, download analized data as .docx.
 
-$ cd eeg-analysis-electron
+```shell
+git clone https://github.com/schroneko/eeg-analysis-electron
 
-$ npm install
+cd eeg-analysis-electron
 
-$ pip install -r requirements.txt
+npm install
 
-or
+pip install -r requirements.txt
 
-$ pip install flask matplotlib pandas python-docx scipy
+npm start
+```
 
-$ npm start
-
-Please put the .m00 file and input name, download analized data.
