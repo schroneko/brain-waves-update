@@ -240,7 +240,7 @@ def calc_zscore(input_data, input_name):
         plt.ticklabel_format(style="plain", axis="y", useOffset=False)
         plt.title("EEG-" + eeg_list[i])
         plt.xlabel("Frequency [Hz]")
-        plt.ylabel("Power [μV]")
+        plt.ylabel("Power Spectral Density [e-12 V/Hz]")
         # plt.xlim(0, 20)
         plt.savefig(os.path.join(out_dir, "EEG-" + eeg_list[i] + ".png"))
         plt.clf()
