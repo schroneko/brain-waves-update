@@ -199,7 +199,7 @@ def calc_zscore(input_data, input_name):
     rel_alpha_fp1, rel_alpha_fp2 = 0, 0
     beta_theta_fp1, beta_theta_fp2 = 0, 0
 
-    # ある電極での相対スペクトル密度のZ値を求める
+    # ある電極での相対スペクトル密度のZスコアを求める
     for i in range(len(eeg_list)):
         if input_data.endswith(".m00"):
             dt = 2 * 10 ** (-3)
@@ -240,13 +240,12 @@ def calc_zscore(input_data, input_name):
         plt.ticklabel_format(style="plain", axis="y", useOffset=False)
         plt.title("EEG-" + eeg_list[i])
         plt.xlabel("Frequency [Hz]")
-        plt.ylabel("Power Spectral Density [e-12 V/Hz]")
-        # plt.xlim(0, 20)
+        plt.ylabel("Power Spectral Density [V^2/Hz]")
+        plt.xlim(4, 30)  # スペクトルの表示範囲をシータ波帯域〜ベータ波帯域に指定
         plt.savefig(os.path.join(out_dir, "EEG-" + eeg_list[i] + ".png"))
         plt.clf()
 
         # それぞれの電極で計算する
-
         for j in range(3):
             # 標準偏差を求める
             sample_spectrum = np.load(np_load_dataset[i][j])
@@ -255,7 +254,7 @@ def calc_zscore(input_data, input_name):
 
             z = (relative_list[j] - data_mean) / data_std
             result_list.append(
-                "{}電極の{}波の相対パワースペクトルのZ値は{}です。".format(
+                "{}電極の{}波の相対パワースペクトルのZスコアは{}です。".format(
                     eeg_list[i], j_list[j], round(z, 2)
                 )
             )
@@ -276,8 +275,8 @@ def calc_zscore(input_data, input_name):
         pwrs_rel_beta_fp2 = np_load_dataset[1][1]
         pwrs_rel_theta_fp2 = np_load_dataset[1][2]
 
-        # Fp1とFp2のアルファ波パワーの差とZ値を求める
-        # Fp1とFp2のシータ波パワー/ベータ波パワーとZ値を求める
+        # Fp1とFp2のアルファ波パワーの差とZスコアを求める
+        # Fp1とFp2のシータ波パワー/ベータ波パワーとZスコアを求める
         if eeg_list[i] == "Fp1":
             alpha_fp1 = alpha_power
             rel_alpha_fp1 = relative_alpha
@@ -316,7 +315,7 @@ def calc_zscore(input_data, input_name):
                 beta_theta_fp2 - np.mean(spectrum_beta_theta_fp2)
             ) / np.std(spectrum_beta_theta_fp2)
 
-            # beta_thetaの前頭葉左右差とZ値を求める
+            # beta_thetaの前頭葉左右差とZスコアを求める
             beta_theta_diff = beta_theta_fp2 - beta_theta_fp1
 
             spectrum_beta_theta_diff = spectrum_beta_theta_fp2 - spectrum_beta_theta_fp1
@@ -329,23 +328,26 @@ def calc_zscore(input_data, input_name):
     fig, ax = plt.subplots(figsize=(10, 8))
     plot_topomap(result_theta, ax, fig)
     plt.title("theta_topomap")
+    # plt.title("シータ波のトポグラフィー")
     plt.savefig(os.path.join(out_dir, "theta_save_topomap.png"))
 
     fig, ax = plt.subplots(figsize=(10, 8))
     plot_topomap(result_alpha, ax, fig)
     plt.title("alpha_topomap")
+    # plt.title("アルファ波のトポグラフィー")
     plt.savefig(os.path.join(out_dir, "alpha_save_topomap.png"))
 
     fig, ax = plt.subplots(figsize=(10, 8))
     plot_topomap(result_beta, ax, fig)
     plt.title("beta_topomap")
+    # plt.title("ベータ波のトポグラフィー")
     plt.savefig(os.path.join(out_dir, "beta_save_topomap.png"))
 
     plt.clf()
 
     dt_now = datetime.datetime.now()
     document = Document()
-    document.add_heading("結果報告書")
+    document.add_heading("脳波の解析結果")
     document.add_paragraph(" ")
     document.add_paragraph("作成日：" + dt_now.strftime("%Y年%m月%d日"))
 
@@ -354,30 +356,52 @@ def calc_zscore(input_data, input_name):
     document.add_paragraph("ファイル名：" + file_name)
     document.add_paragraph("インプット名：" + input_name)
     document.add_paragraph(" ")
-    document.add_paragraph("あなたのアルファ波の分布は以下のようになります。")
-    document.add_picture(
-        os.path.join(out_dir, "alpha_save_topomap.png"), width=Inches(3.5)
+    document.add_heading("脳波トポグラフィー", level=2)
+    document.add_paragraph(
+        "各時刻、各電極計12箇所における脳波を周波数毎（シータ波・アルファ波・ベータ波として分類）に分析し、脳波トポグラフィーを描画します。"
     )
-    document.add_paragraph("あなたのベータ波の分布は以下のようになります。")
-    document.add_picture(
-        os.path.join(out_dir, "beta_save_topomap.png"), width=Inches(3.5)
-    )
-    document.add_paragraph("あなたのシータ波の分布は以下のようになります。")
+    # document.add_paragraph("シータ波の分布は以下のようになります。")
+    document.add_heading("シータ波の分布", level=3)
     document.add_picture(
         os.path.join(out_dir, "theta_save_topomap.png"), width=Inches(3.5)
     )
+    document.add_page_break()
 
-    document.add_paragraph(
-        "あなたの脳波検査の結果からZスコアを算出します。（Zスコアは1297人の正常被験者のデータセットから算出しております）"
+    # document.add_paragraph("アルファ波の分布は以下のようになります。")
+    document.add_heading("アルファ波の分布", level=3)
+    document.add_picture(
+        os.path.join(out_dir, "alpha_save_topomap.png"), width=Inches(3.5)
     )
+    document.add_heading("ベータ波の分布", level=3)
+    # document.add_paragraph("ベータ波の分布は以下のようになります。")
+    document.add_picture(
+        os.path.join(out_dir, "beta_save_topomap.png"), width=Inches(3.5)
+    )
+    # document.add_paragraph(" ")
+    document.add_page_break()
+
+    document.add_heading("Zスコア（標準得点）の算出", level=2)
+    document.add_paragraph("正常被験者1297人の脳波データから入力ファイルのZスコアを算出します。")
+    document.add_paragraph(
+        "Zスコアは、入力データと正常なデータ群の平均値との差を正常なデータ群の標準偏差で除したもので、入力データがどれだけ正常なデータから外れているかを示す指標の一つです。"
+    )
+    document.add_paragraph("例えば、Z値が+1であるならデータセットの分布から標準偏差分だけ外れている事を示します。")
 
     for k in range(len(result_list)):
-        document.add_paragraph(" ")
-        document.paragraphs[13 + k].add_run(result_list[k])
+        # document.add_paragraph(" ")
+        # document.paragraphs[13 + k].add_run(result_list[k])
+        document.add_paragraph(result_list[k])
+        if (k + 1) % 3 == 0:
+            document.add_paragraph(" ")
+
+    document.add_heading("前頭葉の左右差の分析", level=2)
+    document.add_paragraph(
+        "前頭葉のアルファ波の左右差やそのZスコア、前頭葉のベータ波とシータ波の比率やそのZスコアが様々な症例と相関性のある事が近年の論文によって示されています。"
+    )
 
     document.add_paragraph("前頭葉のアルファ波左右差の値は" + str("{:.3g}".format(alpha_diff)) + "です。")
     document.add_paragraph(
-        "前頭葉のアルファ波左右差の相対パワースペクトルのZ値は" + str("{:.3g}".format(z_alpha_diff)) + "です。"
+        "前頭葉のアルファ波左右差の相対パワースペクトルのZスコアは" + str("{:.3g}".format(z_alpha_diff)) + "です。"
     )
     document.add_paragraph(
         "前頭葉（右）のベータ波/シータ波の比率は" + str("{:.3g}".format(beta_theta_fp1)) + "です。"
@@ -386,17 +410,25 @@ def calc_zscore(input_data, input_name):
         "前頭葉（左）のベータ波/シータ波の比率は" + str("{:.3g}".format(beta_theta_fp2)) + "です。"
     )
     document.add_paragraph(
-        "前頭葉（右）のベータ波/シータ波のZ値は" + str("{:.3g}".format(z_beta_theta_fp1)) + "です。"
+        "前頭葉（右）のベータ波/シータ波のZスコアは" + str("{:.3g}".format(z_beta_theta_fp1)) + "です。"
     )
     document.add_paragraph(
-        "前頭葉（左）のベータ波/シータ波のZ値は" + str("{:.3g}".format(z_beta_theta_fp2)) + "です。"
+        "前頭葉（左）のベータ波/シータ波のZスコアは" + str("{:.3g}".format(z_beta_theta_fp2)) + "です。"
     )
     document.add_paragraph(
         "前頭葉のベータ波/シータ波の左右差は" + str("{:.3g}".format(beta_theta_diff)) + "です。"
     )
     document.add_paragraph(
-        "前頭葉のベータ波/シータ波の左右差のZ値は" + str("{:.3g}".format(z_beta_theta_diff)) + "です。"
+        "前頭葉のベータ波/シータ波の左右差のZスコアは" + str("{:.3g}".format(z_beta_theta_diff)) + "です。"
     )
+    document.add_page_break()
+
+    document.add_heading("パワースペクトル密度の周波数依存性", level=2)
+    document.add_paragraph("周波数解析した各電極におけるパワースペクトル密度の周波数依存性を描画します。")
+    document.add_paragraph(
+        "シータ波帯域が4~8 [Hz]、アルファ波帯域が8~12 [Hz]、ベータ波帯域が12~30 [Hz]となっています。"
+    )
+
     for i in range(len(eeg_list)):
         document.add_picture(
             os.path.join(out_dir, "EEG-" + eeg_list[i] + ".png"), width=Inches(3.5)
