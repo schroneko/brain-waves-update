@@ -47,7 +47,8 @@
     }
   },
   "overrides": {
-    "@electron/get": "5.1.0"
+    "@electron/get": "5.1.0",
+    "lodash": "4.18.1"
   },
   "engines": {
     "node": ">=22.22.3"
