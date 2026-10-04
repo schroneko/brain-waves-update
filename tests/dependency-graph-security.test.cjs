@@ -1,0 +1,1 @@
+const test=require("node:test");const assert=require("node:assert/strict");const lock=require("../package-lock.json");test("Electron download dependency graph removes vulnerable cache and braces",()=>{for(const name of ["http-cache-semantics","braces"]){assert.equal(Object.keys(lock.packages).some(p=>p.endsWith("node_modules/"+name)),false,name)}});
