@@ -7,7 +7,8 @@
     "start": "electron .",
     "build-mac": "electron-builder --mac --x64",
     "build-win": "electron-builder --win --x64",
-    "build-win32": "electron-builder --win --ia32"
+    "build-win32": "electron-builder --win --ia32",
+    "test:security": "node --test tests/dependency-graph-security.test.cjs"
   },
   "keywords": [],
   "author": "yuta_hayashi",
@@ -46,5 +47,11 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     }
+  },
+  "overrides": {
+    "@electron/get": "5.1.0"
+  },
+  "engines": {
+    "node": ">=22.22.3"
   }
 }
