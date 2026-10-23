@@ -14,7 +14,7 @@
   "author": "yuta_hayashi",
   "license": "UNLICENSED",
   "devDependencies": {
-    "electron": "^41.10.7",
+    "electron": "^42.11.18",
     "electron-builder": "^26.15.3"
   },
   "dependencies": {
