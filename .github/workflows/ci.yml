@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e
+        with:
+          enable-cache: false
+      - run: npm ci
+      - run: npm run test:security
+      - run: npm audit
+      - run: uv venv
+      - run: uv pip install -r requirements-dev.txt
+      - run: uv pip check
+      - run: >-
+          uv run --no-project python -c
+          'import numpy, pandas, scipy, mne, calc_zscore, topograph;
+          from scipy.integrate import simps;
+          from app import app;
+          assert app.test_client().get("/").status_code == 200'
+        env:
+          MPLBACKEND: Agg
+      - run: >-
+          uvx pip-audit --strict --progress-spinner off
+          --path "$(uv run --no-project python -c 'import sysconfig; print(sysconfig.get_path("purelib"))')"
+  package:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: npm ci
+      - run: node_modules/.bin/electron-builder --mac --x64 --dir --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
